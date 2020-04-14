@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct CoinGroup: Decodable, Identifiable {
     let id = UUID()
     let rates: [String:Double]?
@@ -401,7 +400,6 @@ struct Coin: Identifiable, Hashable {
             case "SRD": return NSLocalizedString("Suriname Dollar", comment: "")
             case "SVC": return NSLocalizedString("Salvadoran colón", comment: "")
             case "XRP": return NSLocalizedString("Ripple", comment: "")
-                
             case "AED": return NSLocalizedString("Moroccan dirham", comment: "")
             case "ARS": return NSLocalizedString("Argentine peso", comment: "")
             case "AUD": return NSLocalizedString("Australian dollar", comment: "")

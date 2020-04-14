@@ -152,7 +152,6 @@ final class MainViewModel: ObservableObject {
         })
     }
     
-    
     func callAd() {
         self.rewardAd.requestRewardedVideo()
     }
