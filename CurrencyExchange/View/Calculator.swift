@@ -41,6 +41,7 @@ private enum ActiveSheet {
 }
 
 struct Calculator: View {
+    @State var savedOperator = Symbol.none
     @State private var activeSheet: ActiveSheet = .change
     @State private var staticText = ""
     @State private var isRefreshing = false
@@ -94,7 +95,7 @@ struct Calculator: View {
                         }.padding(.leading, 30)
                         Spacer()
                         
-                        Text(math.calculatorNum).foregroundColor(Color.white)
+                        Text(math.topCalculatorNum).foregroundColor(Color.white)
                             .frame(width: width / 1.4, alignment: .trailing)
                             .font(Font.custom(rubik, size: 30))
                             .padding(.trailing, 25)
@@ -125,7 +126,7 @@ struct Calculator: View {
                         }.padding(.leading, 30)
                         Spacer()
                         
-                        Text(math.comparedNum).foregroundColor(Color.white)
+                        Text(math.bottomResultnum).foregroundColor(Color.white)
                             .frame(width: width / 1.4, alignment: .trailing)
                             .font(Font.custom(rubik, size: 30))
                             .padding(.bottom, 20)
@@ -168,6 +169,7 @@ struct Calculator: View {
                         .padding(.leading, -6)
                         
                         Button(action: {
+                            self.savedOperator = .divide
                             self.math.prepareOperation(Symbol.divide)
                             AudioServicesPlaySystemSound(Constants.systemSound)
                         }) { Image(systemName: Constants.divide)
@@ -202,6 +204,7 @@ struct Calculator: View {
                         .padding(.leading, -6)
                         
                         Button(action: {
+                            self.savedOperator = .multiply
                             self.math.prepareOperation(Symbol.multiply)
                             AudioServicesPlaySystemSound(Constants.systemSound)
                         }) { Image(systemName: Constants.multiply)
@@ -236,6 +239,7 @@ struct Calculator: View {
                         .padding(.leading, -6)
                         
                         Button(action: {
+                            self.savedOperator = Symbol.minus
                             self.math.prepareOperation(Symbol.minus)
                             AudioServicesPlaySystemSound(Constants.systemSound)
                         }) { Image(systemName: Constants.minus)
@@ -271,6 +275,7 @@ struct Calculator: View {
                         .padding(.leading, -6)
                         
                         Button(action: {
+                            self.savedOperator = .plus
                             self.math.prepareOperation(Symbol.plus)
                             AudioServicesPlaySystemSound(Constants.systemSound)
                         }) { Image(systemName: Constants.plus)
@@ -299,7 +304,7 @@ struct Calculator: View {
                         .padding(.leading, -6)
                         
                         Button(action: {
-                            self.math.performOperation()
+                            self.math.prepareOperation(self.savedOperator)
                             AudioServicesPlaySystemSound(Constants.systemSound)
                         }) { Image(systemName: Constants.equal)
                         }
@@ -382,7 +387,7 @@ struct Calculator: View {
     }
     
     private func initShareModel() -> some View {
-        return Share(showModel: self.$togglePopOver, typedCoin: self.mainVM.coinIHave.coinCode, resultCoin: self.mainVM.coinIWant.coinCode, typedAmount: self.math.calculatorNum, resultAmount: self.math.comparedNum, lastUpdate:self.mainVM.lastUpdated, rateDifference: self.math.coinValueText())
+        return Share(showModel: self.$togglePopOver, typedCoin: self.mainVM.coinIHave.coinCode, resultCoin: self.mainVM.coinIWant.coinCode, typedAmount: self.math.topCalculatorNum, resultAmount: self.math.bottomResultnum, lastUpdate:self.mainVM.lastUpdated, rateDifference: self.math.coinValueText())
     }
 }
 
