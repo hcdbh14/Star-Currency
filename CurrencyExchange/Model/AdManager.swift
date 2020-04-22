@@ -9,7 +9,7 @@ enum UserUnlockType: Int8 {
 }
 
 final class Rewarded: NSObject, GADRewardedAdDelegate {
-    
+    var reloadAnotherAd = false
     var finishedWatchingVideo = false
     var rewardFunction: (() -> Void)? = nil
     let userDefaultPurchase = UserDefaults.standard.integer(forKey: "unlockType")
@@ -21,14 +21,15 @@ final class Rewarded: NSObject, GADRewardedAdDelegate {
     }
     
     func showAd(rewardFunction: @escaping () -> Void) {
-        if self.rewardedAd.isReady {
-            self.rewardFunction = rewardFunction
-            let root = UIApplication.shared.windows.last?.rootViewController
-            self.rewardedAd.present(fromRootViewController: root!, delegate: self)
-        }
-        else {
-            print("Ad Not Ready")
-        }
+            if rewardedAd.isReady {
+                self.rewardFunction = rewardFunction
+                let root = UIApplication.shared.windows.last?.rootViewController
+                rewardedAd.present(fromRootViewController: root!, delegate: self)
+                reloadAnotherAd = true
+            }
+            else {
+                print("Ad Not Ready")
+            }
     }
     
     func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
@@ -43,6 +44,9 @@ final class Rewarded: NSObject, GADRewardedAdDelegate {
         if finishedWatchingVideo && userDefaultPurchase != UserUnlockType.permanentUnlock.rawValue {
             UserDefaults.standard.set(NSDate().timeIntervalSince1970, forKey: "lastWatched")
             UserDefaults.standard.set(UserUnlockType.dailyUnlock.rawValue, forKey: "unlockType")
+        } else {
+            self.rewardedAd = GADRewardedAd(adUnitID: "ca-app-pub-3940256099942544/1712485313")
+            requestRewardedVideo()
         }
     }
 }
